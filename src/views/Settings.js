@@ -24,9 +24,6 @@ const Settings = () => {
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
-    paypalEmail: "",
-    identification: null,
-    profileImage: null,
   });
 
   console.log(formData.identification);
@@ -62,13 +59,10 @@ const Settings = () => {
     e.preventDefault();
     try {
       setDisable(true);
-      await dispatch(updateSettings({ formData, preIdCard, preProfileImg, userId }));
+      await dispatch(updateSettings({ formData,userId }));
       setFormData({
       firstName : '',
       lastName : '',
-      paypalEmail : '',
-      identification : null,
-      profileImage : null,
       });
     }
     catch (error) {
@@ -135,7 +129,7 @@ const Settings = () => {
                             </FormGroup>
                           </Col>
 
-                          <Col md="6">
+                          {/* <Col md="6">
                             <FormGroup>
                               <label>Paypal Email </label>
 
@@ -150,10 +144,10 @@ const Settings = () => {
                                 />
                               </InputGroup>
                             </FormGroup>
-                          </Col>
+                          </Col> */}
                         </Row>
 
-                        <FormGroup className="mb-4">
+                        {/* <FormGroup className="mb-4">
                           <label>Upload Photo of Government ID Card: </label>
                           <InputGroup className="input-group-alternative">
                             <Input
@@ -196,7 +190,7 @@ const Settings = () => {
                           alt="Profile Image"
                           width={'200px'}
                           className="mb-4 rounded"
-                        />
+                        /> */}
 
                         <div className="text-center">
                           <Button

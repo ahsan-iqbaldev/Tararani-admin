@@ -15,72 +15,72 @@ import { storage, db } from "../../config/firebase";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const signUpUser = createAsyncThunk(
-  "user/signup",
-  async (getData, { rejectWithValue, dispatch }) => {
-    try {
-        console.log(getData);
-        const formData = getData?.data;
-        const user = getData?.user;
-        console.log(formData, user);
-        const { phoneNumber } = formData;
-        console.log(phoneNumber, "phonenumber");
+// export const signUpUser = createAsyncThunk(
+//   "user/signup",
+//   async (getData, { rejectWithValue, dispatch }) => {
+//     try {
+//         console.log(getData);
+//         const formData = getData?.data;
+//         const user = getData?.user;
+//         console.log(formData, user);
+//         const { phoneNumber } = formData;
+//         console.log(phoneNumber, "phonenumber");
   
-        const querySnapshot = await getDocs(
-          query(collection(db, "users"), where("phoneNumber", "==", phoneNumber))
-        );
+//         const querySnapshot = await getDocs(
+//           query(collection(db, "users"), where("phoneNumber", "==", phoneNumber))
+//         );
   
-        if (!querySnapshot.empty) {
-          toast.error(
-            "Phone number already exists. Please use a different phone number."
-          );
-          return rejectWithValue("Phone number already exists");
-        }
+//         if (!querySnapshot.empty) {
+//           toast.error(
+//             "Phone number already exists. Please use a different phone number."
+//           );
+//           return rejectWithValue("Phone number already exists");
+//         }
 
-        console.log(formData.identification,formData.profileImage,"AHsan Imqgaes Lonks")
+//         console.log(formData.identification,formData.profileImage,"AHsan Imqgaes Lonks")
   
-        const identifierImageRef = ref(
-          storage,
-          `identifierImages/${formData.identification.name}`
-        );
-        await uploadBytes(identifierImageRef, formData.identification);
+//         const identifierImageRef = ref(
+//           storage,
+//           `identifierImages/${formData.identification.name}`
+//         );
+//         await uploadBytes(identifierImageRef, formData.identification);
   
-        const profileImageRef = ref(
-          storage,
-          `profileImages/${formData.profileImage.name}`
-        );
-        await uploadBytes(profileImageRef, formData.profileImage);
+//         const profileImageRef = ref(
+//           storage,
+//           `profileImages/${formData.profileImage.name}`
+//         );
+//         await uploadBytes(profileImageRef, formData.profileImage);
   
-        const identifierImageUrl = await getDownloadURL(identifierImageRef);
-        const profileImageUrl = await getDownloadURL(profileImageRef);
+//         const identifierImageUrl = await getDownloadURL(identifierImageRef);
+//         const profileImageUrl = await getDownloadURL(profileImageRef);
   
-        const uid = user.uid;
+//         const uid = user.uid;
   
-        const userData = {
-          uid: uid,
-          identifierImageUrl,
-          profileImageUrl,
-          firstName: formData.firstName,
-          lastName: formData.lastName,
-          phoneNumber: user.phoneNumber,
-          paypalEmail: formData.paypalEmail,
-          role: "host",
-          isBlocked: false,
-          createdAt: serverTimestamp(),
-        };
+//         const userData = {
+//           uid: uid,
+//           identifierImageUrl,
+//           profileImageUrl,
+//           firstName: formData.firstName,
+//           lastName: formData.lastName,
+//           phoneNumber: user.phoneNumber,
+//           paypalEmail: formData.paypalEmail,
+//           role: "host",
+//           isBlocked: false,
+//           createdAt: serverTimestamp(),
+//         };
 
-        console.log(userData)
+//         console.log(userData)
   
-        await setDoc(doc(db, "users", uid), userData);
+//         await setDoc(doc(db, "users", uid), userData);
   
-        return { userData };
-    } catch (error) {
-        console.log(error);
-        toast.error("Something wrong on details. Please try again");
-        return rejectWithValue(error.message || "Error processing form data");
-    }
-  }
-);
+//         return { userData };
+//     } catch (error) {
+//         console.log(error);
+//         toast.error("Something wrong on details. Please try again");
+//         return rejectWithValue(error.message || "Error processing form data");
+//     }
+//   }
+// );
 
 
 export const signInUser = createAsyncThunk(
@@ -95,7 +95,7 @@ export const signInUser = createAsyncThunk(
           query(
             collection(db, "users"),
             where("phoneNumber", "==", phoneNumber),
-            where("role", "==", "host")
+            where("role", "==", "admin")
           )
         );
   

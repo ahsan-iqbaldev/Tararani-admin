@@ -57,11 +57,6 @@ const ForgotPassword = () => {
               <small>Login</small>
             </Link>
           </Col>
-          <Col className="text-right" xs="6">
-            <Link className="   text-white" to="/auth/register">
-              <small>Create new account</small>
-            </Link>
-          </Col>
         </Row>
       </Col>
     </>

@@ -16,7 +16,6 @@
 
 */
 import Index from "views/Index.js";
-import Register from "views/auth/Register.js";
 import Login from "views/auth/Login.js";
 import forgotPassword from "views/auth/ForgotPassword";
 import PropertyListings from "views/propertly-listings/PropertyListings";
@@ -44,14 +43,6 @@ var routes = [
     name: "Login",
     icon: "ni ni-key-25 text-info",
     component: Login,
-    layout: "/auth",
-    isMenu: false,
-  },
-  {
-    path: "/register",
-    name: "Register",
-    icon: "ni ni-circle-08 text-pink",
-    component: Register,
     layout: "/auth",
     isMenu: false,
   },
@@ -93,28 +84,28 @@ var routes = [
     layout: "/admin",
     isMenu: false,
   },
-  {
-    path: "/bookings",
-    name: "Bookings",
-    icon: "ni ni-check-bold text-site-primary",
-    component: Bookings,
-    layout: "/admin",
-  },
-  {
-    path: "/booking-requests",
-    name: "Booking Requests",
-    icon: "ni ni-bag-17 text-site-primary",
-    component: BookingRequests,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/bookings",
+  //   name: "Bookings",
+  //   icon: "ni ni-check-bold text-site-primary",
+  //   component: Bookings,
+  //   layout: "/admin",
+  // },
+  // {
+  //   path: "/booking-requests",
+  //   name: "Booking Requests",
+  //   icon: "ni ni-bag-17 text-site-primary",
+  //   component: BookingRequests,
+  //   layout: "/admin",
+  // },
 
-  {
-    path: "/disputes",
-    name: "Disputes",
-    icon: "ni ni-ui-04 text-site-primary",
-    component: Disputes,
-    layout: "/admin",
-  },
+  // {
+  //   path: "/disputes",
+  //   name: "Disputes",
+  //   icon: "ni ni-ui-04 text-site-primary",
+  //   component: Disputes,
+  //   layout: "/admin",
+  // },
 
   {
     path: "/settings",

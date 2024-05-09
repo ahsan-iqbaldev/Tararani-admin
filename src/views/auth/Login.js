@@ -43,17 +43,19 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { signInUser } from "store/auth/authThunk";
-import PhoneInput from "react-phone-input-2";
+// import PhoneInput from "react-phone-input-2";
+import PhoneInput from "react-phone-number-input";
+import "react-phone-number-input/style.css";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [phoneNumber, setNumber] = useState(" ");
+  const [phoneNumber, setNumber] = useState(null);
   const [otpStatus, setotpStatus] = useState(false);
   const [submitbutton, setSubmitbutton] = useState(false);
   const [confirmationResult, setConfirmationResult] = useState(null);
 
   const handleInputChange = (e) => {
-    setNumber(e.target.value);
+    setNumber(e);
   };
 
   const sendVerificationCode = (number) => async (dispatch) => {
@@ -123,7 +125,7 @@ const Login = () => {
   return (
     <>
       <Col lg="5" md="7">
-      <div id="recaptcha-container" style={{display: 'none'}}></div>
+        <div id="recaptcha-container" style={{ display: "none" }}></div>
         <Card className="bg-secondary shadow border-0">
           {otpStatus ? (
             <>
@@ -136,24 +138,23 @@ const Login = () => {
               </div>
               <Form role="form" onSubmit={handleSubmit}>
                 <FormGroup className="mb-3">
-                  <InputGroup className="input-group-alternative">
+                  {/* <InputGroup className="input-group-alternative">
                     <PhoneInput
                       country={"pk"}
                       required
                       inputProps={phoneInputProps}
                     />
-                  </InputGroup>
+                  </InputGroup> */}
+                  <PhoneInput
+                    placeholder="Enter phone number"
+                    value={phoneNumber}
+                    onChange={handleInputChange}
+                    defaultCountry="pk"
+                    className="form-control shadow rounded w-100 py-4 ps-12 text-gray-700 leading-tight spacinginput outline-none"
+                  />
                 </FormGroup>
 
                 <div className="text-center">
-                  {/* <Link
-                    className="my-2 btn  bg-default border-0 text-white"
-                    color="primary"
-                    type="button"
-                    to="/admin/index"
-                  > 
-                    Sign in
-                  </Link> */}
                   <button
                     className="my-2 btn  bg-default border-0 text-white"
                     type="submit"
@@ -173,11 +174,6 @@ const Login = () => {
               <small>Forgot password?</small>
             </Link>
           </Col> */}
-          <Col className="" xs="6">
-            <Link className=" text-white" to="/auth/register">
-              <small>Create new account</small>
-            </Link>
-          </Col>
         </Row>
       </Col>
     </>
