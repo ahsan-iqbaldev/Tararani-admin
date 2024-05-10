@@ -34,7 +34,7 @@ const CoHost = () => {
   const history = useHistory();
   const { user } = useSelector((state) => state.auth);
   const uid = user?.uid;
-  const { categories,singleCategory, loading } = useSelector((state) => state.categories);
+  const { categories, loading } = useSelector((state) => state.categories);
   console.log(categories, "categories");
   const [createModal, setCreateModal] = useState(false);
   const [modal, setModal] = useState(false);

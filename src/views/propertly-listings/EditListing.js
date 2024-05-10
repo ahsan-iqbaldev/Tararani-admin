@@ -2,7 +2,7 @@ import OnlyHeader from "components/Headers/OnlyHeader";
 import InsuranceForHosts from "components/global/InsuranceForHosts";
 import PropertyDetailsGuidelines from "components/global/PropertyDetailsGuidelines";
 import PropertyPhotosGuidelines from "components/global/PropertyPhotosGuidelines";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { countries } from "../../context/index";
@@ -24,13 +24,18 @@ import {
 } from "reactstrap";
 import { getsingleProperty } from "store/properties/propertiesThunk";
 import { updateProperty } from "store/properties/propertiesThunk";
+import JoditEditor from "jodit-react";
+import "../../assets/css/custuminput.css";
+import { getCategory } from "store/categories/categoriesThunk";
 
 const EditListing = () => {
+  const editor = useRef(null);
   const { id } = useParams();
   const dispatch = useDispatch();
   const history = useHistory();
 
   const { singleProperty, loading } = useSelector((state) => state.properties);
+  const { categories } = useSelector((state) => state.categories);
   console.log(singleProperty);
   const { user } = useSelector((state) => state.auth);
 
@@ -38,128 +43,15 @@ const EditListing = () => {
   const docId = id;
 
   const [formData, setFormData] = useState({
-    selectedState: "",
-    selectedCity: "",
-    zipCode: "",
-    descriptiveSentence: "",
-    generalDescription: "",
-    usableSpace: "",
-    communications: "",
-    otherNoteworthyItems: "",
-    keyAmenities: [
-      {
-        name: "",
-        image: "",
-      },
-    ],
-    propertyImages: [],
-    priceDetails: {
-      roomType: "",
-      pricePerNight: null,
-      maxGuests: null,
-      extraGuestFee: null,
-      bedrooms: [
-        {
-          name: "",
-          price: null,
-        },
-      ],
-    },
-    petsAllowed: null,
-    petFee: null,
-    cleaningFee: null,
-    cityOptions: null,
+    category: null,
+    title: "",
+    description: "",
+    productImages: [],
+    price: "",
+    comparePrice: "",
   });
 
   console.log(formData, "HamzaIjazhiugjhyggf");
-
-  const [bedrooms, setBedRooms] = useState([
-    {
-      name: "",
-      price: null,
-    },
-  ]);
-
-  const handleDetailsChange = (e) => {
-    setFormData((prev) => ({
-      ...prev,
-      priceDetails: { ...prev.priceDetails, roomType: e.target.value },
-    }));
-  };
-
-  const [selectedState, setSelectedState] = useState("");
-  const [guidelinesOpen, setGuidesLinesOpen] = useState(false);
-  const guideLinesToggle = () => setGuidesLinesOpen(!guidelinesOpen);
-
-  const [photosOpen, setPhotosGuidesLinesOpen] = useState(false);
-  const photosGuideLinesToggle = () => setPhotosGuidesLinesOpen(!photosOpen);
-
-  const handleStateChange = (e) => {
-    const newState = e.target.value;
-    setSelectedState(newState);
-  };
-
-  const handleAmenityChange = (index, e) => {
-    const updatedAmenities = [...formData.keyAmenities];
-
-    if (e.target.name === "image" && e.target.files.length > 0) {
-      const file = e.target.files[0];
-      updatedAmenities[index] = {
-        ...updatedAmenities[index],
-        [e.target.name]: file,
-      };
-    } else if (e.target.name in updatedAmenities[index]) {
-      updatedAmenities[index] = {
-        ...updatedAmenities[index],
-        [e.target.name]: e.target.value,
-      };
-    }
-
-    setFormData((prevData) => ({
-      ...prevData,
-      keyAmenities: updatedAmenities,
-    }));
-  };
-
-  const addAmenity = () => {
-    setFormData((prev) => ({
-      ...prev,
-      keyAmenities: [...prev.keyAmenities, { name: "", image: "" }],
-    }));
-  };
-
-  const removeAmenity = (index) => {
-    if (formData.keyAmenities.length > 1) {
-      const updatedAmenities = [...formData.keyAmenities];
-      updatedAmenities.splice(index, 1);
-      setFormData((prev) => ({ ...prev, keyAmenities: updatedAmenities }));
-    }
-  };
-
-  // Bedrooms
-
-  const handleBedroomChange = (index, e) => {
-    const updatedBedrooms = [...bedrooms];
-
-    updatedBedrooms[index][e.target.name] = e.target.value;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      priceDetails: { ...prevData.priceDetails, bedrooms: updatedBedrooms },
-    }));
-  };
-
-  const addBedroom = () => {
-    setBedRooms((prev) => [...prev, { name: "", price: null }]);
-  };
-
-  const removeBedroom = (index) => {
-    if (bedrooms.length > 1) {
-      const updatedBedrooms = [...bedrooms];
-      updatedBedrooms.splice(index, 1);
-      setBedRooms(updatedBedrooms);
-    }
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -168,15 +60,6 @@ const EditListing = () => {
       ...prevData,
       [name]: value,
     }));
-
-    // if (name === "selectedState") {
-    //   const cityOptions = countries[value];
-    //   setFormData((prevData) => ({
-    //     ...prevData,
-    //     selectedCity: "",
-    //     cityOptions,
-    //   }));
-    // }
   };
 
   const handleSubmit = async (e) => {
@@ -201,6 +84,10 @@ const EditListing = () => {
   useEffect(() => {
     dispatch(getsingleProperty(id));
   }, [dispatch, id]);
+
+  useEffect(() => {
+    dispatch(getCategory(uid));
+  }, []);
 
   return (
     <>
@@ -231,9 +118,9 @@ const EditListing = () => {
                             name="category"
                           >
                             <option value="">Select State</option>
-                            {Object.keys(countries).map((state, index) => (
-                              <option key={index} value={state}>
-                                {state}
+                            {categories.map((state, index) => (
+                              <option key={index} value={state.titlle}>
+                                {state.title}
                               </option>
                             ))}
                           </Input>
@@ -261,43 +148,22 @@ const EditListing = () => {
                       <FormGroup>
                         <Label>Description</Label>
                         <InputGroup className="input-group-alternative">
-                          <Input
-                            type="text"
-                            placeholder="Add Description"
-                            name="description"
-                            onChange={(e) => {
-                              handleInputChange(e);
-                            }}
+                   
+                               <JoditEditor
+                            ref={editor}
                             value={formData?.description}
+                            style={{width:"100%"}}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                description: e,
+                              })
+                            }
                           />
                         </InputGroup>
                       </FormGroup>
                     </Col>
 
-                    {/* <Col xs="12">
-                      <hr />
-                    </Col>
-                    <Col xs="12">
-                      <h3>
-                        Rental Property Details{" "}
-                      </h3>
-                    </Col>
-                    <Col xs="6">
-                      <FormGroup>
-                        <Label>Description</Label>
-                        <InputGroup className="input-group-alternative">
-                          <Input
-                            type="textarea"
-                            placeholder="e.g This rental is a perfect spot to explore..."
-                            name="description"
-                            onChange={(e) => {
-                              handleInputChange(e);
-                            }}
-                            value={formData?.description}
-                          />
-                        </InputGroup>
-                      </FormGroup>
-                    </Col> */}
                     <Col xs="12">
                       <h4>
                         Update Product Images{" "}

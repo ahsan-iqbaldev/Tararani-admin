@@ -12,10 +12,115 @@ import {
   onSnapshot,
   where,
   updateDoc,
+  increment
 } from "firebase/firestore";
 import { db, storage } from "../../config/firebase";
 import { toast } from "react-toastify";
 import { fetchProperties, fetchPropertiesLoader } from "./propertiesSlice";
+
+// export const addProperty = createAsyncThunk(
+//   "user/addproperty",
+//   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
+//     try {
+//       const { productImages } = formData;
+
+//       const imagesArr = await Promise.all(
+//         productImages?.map(async (amenity) => {
+//           const storageRef = ref(storage, `productImages/${amenity.name}`);
+//           await uploadBytes(storageRef, amenity);
+//           return await getDownloadURL(storageRef);
+//         })
+//       );
+
+//       const propertiesCollectionRef = collection(db, "products");
+//       const documentRef = doc(propertiesCollectionRef);
+
+//       await setDoc(documentRef, {
+//         category: formData?.category,
+//         productImages: imagesArr,
+//         title: formData?.title,
+//         description: formData?.description,
+//         price: formData?.price,
+//         comparePrice: formData?.comparePrice,
+//         createdAt: serverTimestamp(),
+//         createdBy: uid,
+//         status: "ACTIVE",
+//         sales: 0,
+//       });
+
+//       onSuccess();
+//     } catch (error) {
+//       console.error(error);
+//       return rejectWithValue(error.message || "Error processing form data");
+//     }
+//   }
+// );
+
+// export const addProperty = createAsyncThunk(
+//   "user/addproperty",
+//   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
+//     try {
+//       const { productImages } = formData;
+
+//       const imagesArr = await Promise.all(
+//         productImages?.map(async (amenity) => {
+//           const storageRef = ref(storage, `productImages/${amenity.name}`);
+//           await uploadBytes(storageRef, amenity);
+//           return getDownloadURL(storageRef);
+//         })
+//       );
+
+//       const propertiesCollectionRef = collection(db, "products");
+//       const documentRef = doc(propertiesCollectionRef);
+
+//       await setDoc(documentRef, {
+//         category: formData?.category,
+//         productImages: imagesArr,
+//         title: formData?.title,
+//         description: formData?.description,
+//         price: formData?.price,
+//         comparePrice: formData?.comparePrice,
+//         createdAt: serverTimestamp(),
+//         createdBy: uid,
+//         status: "ACTIVE",
+//         sales: 0,
+//       });
+
+//       // Fetch data from categories collection
+//       const categoriesCollectionRef = collection(db, "products");
+//       const q = query(
+//         categoriesCollectionRef,
+//         where("category", "==", formData?.category)
+//       );
+//       const querySnapshot = await getDocs(q);
+
+//       const categoryDocs = [];
+//       querySnapshot.forEach((doc) => {
+//         categoryDocs.push(doc.data());
+//       });
+
+//       console.log(categoryDocs, "categoryDocs");
+
+//       if (categoryDocs.length > 0) {
+//         const propertiesCollectionRef = collection(db, "categories");
+//         const documentRef = doc(
+//           propertiesCollectionRef,
+//           where("title", "==", formData?.category)
+//         );
+
+//         await updateDoc(documentRef, {
+//           products: categoryDocs?.length,
+//         });
+//       }
+
+//       onSuccess();
+//     } catch (error) {
+//       console.error(error);
+//       return rejectWithValue(error.message || "Error processing form data");
+//     }
+//   }
+// );
+
 
 export const addProperty = createAsyncThunk(
   "user/addproperty",
@@ -27,7 +132,7 @@ export const addProperty = createAsyncThunk(
         productImages?.map(async (amenity) => {
           const storageRef = ref(storage, `productImages/${amenity.name}`);
           await uploadBytes(storageRef, amenity);
-          return await getDownloadURL(storageRef);
+          return getDownloadURL(storageRef);
         })
       );
 
@@ -48,12 +153,32 @@ export const addProperty = createAsyncThunk(
       });
 
       onSuccess();
+
+      // Fetch data from categories collection
+      const categoriesCollectionRef = collection(db, "categories");
+      const q = query(
+        categoriesCollectionRef,
+        where("title", "==", formData?.category)
+      );
+      const querySnapshot = await getDocs(q);
+
+      // Update the category document if it exists
+      if (!querySnapshot.empty) {
+        const docRef = querySnapshot.docs[0].ref;
+        await updateDoc(docRef, {
+          products: increment(querySnapshot.size),
+        });
+      }
+
+      onSuccess();
     } catch (error) {
       console.error(error);
       return rejectWithValue(error.message || "Error processing form data");
     }
   }
 );
+
+
 
 export const getProperties = createAsyncThunk(
   "user/getproperties",

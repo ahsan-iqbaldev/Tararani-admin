@@ -1,6 +1,6 @@
 import OnlyHeader from "components/Headers/OnlyHeader";
 import { countries } from "../../context/index";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import {
@@ -17,12 +17,17 @@ import {
   InputGroup,
 } from "reactstrap";
 import { addProperty } from "store/properties/propertiesThunk";
+import { getCategory } from "store/categories/categoriesThunk";
+import JoditEditor from "jodit-react";
+import "../../assets/css/custuminput.css";
 
 const CreateListing = () => {
+  const editor = useRef(null);
   const dispatch = useDispatch();
   const history = useHistory();
   const { loading } = useSelector((state) => state.properties);
   const { user } = useSelector((state) => state.auth);
+  const { categories } = useSelector((state) => state.categories);
 
   const uid = user.uid;
 
@@ -47,18 +52,20 @@ const CreateListing = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await dispatch(
-      addProperty(
-        {
+      addProperty({
         formData,
         onSuccess: () => {
           history.push("/admin/products");
         },
         uid,
-      }
-    )
+      })
     );
-    console.log(formData,'formData');
+    console.log(formData, "formData");
   };
+
+  useEffect(() => {
+    dispatch(getCategory(uid));
+  }, []);
 
   return (
     <>
@@ -75,7 +82,6 @@ const CreateListing = () => {
               <form onSubmit={handleSubmit}>
                 <CardBody>
                   <Row>
-
                     <Col md="6">
                       <FormGroup>
                         <Label>Category</Label>
@@ -88,9 +94,9 @@ const CreateListing = () => {
                             required
                           >
                             <option value="">Select Category</option>
-                            {Object.keys(countries).map((state, index) => (
-                              <option key={index} value={state}>
-                                {state}
+                            {categories.map((state, index) => (
+                              <option key={index} value={state.titlle}>
+                                {state.title}
                               </option>
                             ))}
                           </Input>
@@ -117,13 +123,16 @@ const CreateListing = () => {
                       <FormGroup>
                         <Label>Description</Label>
                         <InputGroup className="input-group-alternative">
-                          <Input
-                            type="text"
-                            placeholder="Description"
-                            name="description"
-                            onChange={handleInputChange}
+                          <JoditEditor
+                            ref={editor}
                             value={formData.description}
-                            required
+                            style={{width:"100%"}}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                description: e,
+                              })
+                            }
                           />
                         </InputGroup>
                       </FormGroup>

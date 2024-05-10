@@ -1,3 +1,7 @@
 .spacinginput{
     padding-left: 50px !important;
 }
+
+.jodit-react-container{
+    width: 100% !important;
+}
