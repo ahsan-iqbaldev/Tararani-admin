@@ -33,6 +33,7 @@ const CreateListing = () => {
 
   const [formData, setFormData] = useState({
     category: null,
+    categoryId: '',
     title: "",
     description: "",
     productImages: [],
@@ -40,13 +41,23 @@ const CreateListing = () => {
     comparePrice: "",
   });
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
+    
+    if (name === 'category') {
+      const selectedCategory = categories.find(category => category.title === value);
+      
+      setFormData({
+        ...formData,
+        category: value,
+        categoryId: selectedCategory ? selectedCategory.id : '' 
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value
+      });
+    }
   };
 
   const handleSubmit = async (e) => {
