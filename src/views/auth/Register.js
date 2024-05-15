@@ -247,11 +247,7 @@
 //                   <Col xs="12">
 //                     <div>
 //                       <h5 className="text-muted">
-//                         <strong> HOST IDENTIFICATION </strong>– airCASITA
-//                         collects identification data on hosts who register with
-//                         airCASITA.com (government ID, selfie, name). Some of
-//                         this identification data might be shared with guests
-//                         booking at airCASITA.com.
+//                         
 //                       </h5>
 //                     </div>
 //                   </Col>

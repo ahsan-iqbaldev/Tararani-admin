@@ -21,7 +21,7 @@ import { useLocation, Route, Switch, Redirect } from "react-router-dom";
 // core components
 import AdminNavbar from "components/Navbars/AdminNavbar.js";
 import Sidebar from "components/Sidebar/Sidebar.js";
-// import logo from "../assets/img/airCasita_logo.png";
+// import logo from "../assets/img/logo.png";
 
 import routes from "routes.js";
 import { useSelector } from "react-redux";

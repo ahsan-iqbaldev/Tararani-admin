@@ -12,7 +12,8 @@ import {
   onSnapshot,
   where,
   updateDoc,
-  increment
+  increment,
+  orderBy,
 } from "firebase/firestore";
 import { db, storage } from "../../config/firebase";
 import { toast } from "react-toastify";
@@ -121,7 +122,6 @@ import { fetchProperties, fetchPropertiesLoader } from "./propertiesSlice";
 //   }
 // );
 
-
 export const addProperty = createAsyncThunk(
   "user/addproperty",
   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
@@ -146,8 +146,11 @@ export const addProperty = createAsyncThunk(
         description: formData?.description,
         price: formData?.price,
         comparePrice: formData?.comparePrice,
+        color: formData?.color,
+        size: formData?.size,
         createdAt: serverTimestamp(),
         createdBy: uid,
+        topSelling: false,
         status: "ACTIVE",
         sales: 0,
       });
@@ -178,8 +181,6 @@ export const addProperty = createAsyncThunk(
   }
 );
 
-
-
 export const getProperties = createAsyncThunk(
   "user/getproperties",
   async (userUID, thunkAPI) => {
@@ -189,7 +190,7 @@ export const getProperties = createAsyncThunk(
       const propertiesCollection = collection(db, "products");
       const propertiesQuery = query(
         propertiesCollection,
-        where("createdBy", "==", userUID)
+        orderBy("createdAt",'desc')
       );
 
       onSnapshot(propertiesQuery, (querySnapshot) => {
@@ -245,6 +246,38 @@ export const getsingleProperty = createAsyncThunk(
   }
 );
 
+export const updateTopSellingAction = createAsyncThunk(
+  "user/updatestatus",
+  async ({ id, data, onSuccess }, { rejectWithValue, getState, dispatch }) => {
+    try {
+      const state = getState();
+      console.log(state,'state')
+      const products = state?.properties?.property; 
+      console.log(products,'products')
+
+      const topSellingCount = products.filter(product => product.topSelling).length;
+
+      if (data && topSellingCount >= 4) {
+        toast.error("You can only mark up to 4 items as top selling.")
+        return rejectWithValue("Exceeded top selling limit");
+      }
+
+      const propertiesCollectionRef = collection(db, "products");
+      const documentRef = doc(propertiesCollectionRef, id);
+
+      await updateDoc(documentRef, {
+        topSelling: data,
+      });
+
+      onSuccess();
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue(error.message || "Error processing form data");
+    }
+  }
+);
+
+
 export const updateProperty = createAsyncThunk(
   "user/updateproperty",
   async (
@@ -277,8 +310,11 @@ export const updateProperty = createAsyncThunk(
         description: formData?.description,
         price: formData?.price,
         comparePrice: formData?.comparePrice,
+        color: formData?.color,
+        size: formData?.size,
         updatedAt: serverTimestamp(),
         createdBy: uid,
+        topSelling: formData?.topSelling,
         status: formData?.status,
         sales: formData?.sales,
       });

@@ -21,7 +21,7 @@ const PropertyDetails = () => {
 
   const { singleProperty, loading } = useSelector((state) => state.properties);
 
-  console.log(singleProperty);
+  console.log(singleProperty,'singleProperty');
 
   useEffect(() => {
     dispatch(getsingleProperty(id));
@@ -82,141 +82,19 @@ const PropertyDetails = () => {
                     <Col xs="12" className="mt-3">
                       <h5 className="mb-0">Descriptive</h5>
                       <p>{singleProperty?.description}</p>
-                      {/* <h5 className="mb-0">General Description</h5>
-                      <p>{singleProperty?.generalDescription}</p>
-
-                      <h5 className="mb-0">Usable Space</h5>
-                      <p>{singleProperty?.usableSpace}</p>
-                      <h5 className="mb-0">Communications/transportation</h5>
-                      <p>{singleProperty?.communications}</p>
-                      <h5 className="mb-0">Other noteworthy items</h5>
-                      <p>{singleProperty?.otherNoteworthyItems}</p> */}
                     </Col>
-
-                    {/* <Col xs="12" className="d-flex mt-3">
-                  <h5 className="mb-0">Rental by individual bedroom?</h5>
-                  <Badge className="mx-3 px-4 text-white bg-default" pill>
-                    {singleProperty?.rentalByRoom ? "Yes" : "No"}
-                  </Badge>
-                </Col> */}
                   </Row>
-                  {/* <h5 className="">Amenities</h5> */}
-
-                  {/* <Row>
-                    <Col xs="12">
-                      <Table
-                        className="align-items-center table-flush"
-                        responsive
-                      >
-                        <thead className="thead-light">
-                          <tr>
-                            <th scope="col">Amenity</th>
-                            <th scope="col">Image</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {singleProperty?.keyAmenities?.map(
-                            (amenity, index) => {
-                              return (
-                                <tr key={index + 100}>
-                                  <th scope="row">{amenity?.name}</th>
-                                  <td>
-                                    <img
-                                      width="50px"
-                                      height="50px"
-                                      className="rounded"
-                                      src={amenity?.image}
-                                    />
-                                  </td>
-                                </tr>
-                              );
-                            }
-                          )}
-                        </tbody>
-                      </Table>
-                    </Col>
-                  </Row> */}
 
                   <Row>
                     <Col xs="12" className="d-flex align-items-center">
-                      <h5 className="mb-0 mr-2">
-                     Product Category
-                      </h5>
+                      <h5 className="mb-0 mr-2">Product Category</h5>
                       <Badge className=" px-4 text-white bg-default" pill>
                         {singleProperty?.category}
                       </Badge>
                     </Col>
 
                     <Col xs="12">
-                      {/* {singleProperty?.priceDetails?.roomType == "true" ? (
-                        <Table
-                          className="align-items-center table-flush mt-3"
-                          responsive
-                        >
-                          <thead className="thead-light">
-                            <tr>
-                              <th scope="col">Bedroom</th>
-                              <th scope="col">Price</th>
-                            </tr>
-                          </thead>
-                          <tbody>
-                            {singleProperty?.priceDetails?.bedrooms?.map(
-                              (room, idx) => {
-                                return (
-                                  <tr key={idx}>
-                                    <th scope="row">{room?.name}</th>
-                                    <td>${room?.price}</td>
-                                  </tr>
-                                );
-                              }
-                            )}
-                          </tbody>
-                        </Table>
-                      ) : (
-                        <div className="d-flex flex-column flex-wrap">
-                          <div className="d-flex flex-wrap  mt-2">
-                            <h5 className="mb-0 mr-2">Price per night</h5>
-                            <Badge className=" px-4 text-white bg-default" pill>
-                              ${singleProperty?.priceDetails?.pricePerNight}{" "}
-                            </Badge>
-                          </div>
-                          <div className="d-flex flex-wrap mt-2 ">
-                            <h5 className="mb-0 mr-2">
-                              Maximum numbers of guests allowed
-                            </h5>
-                            <Badge className=" px-4 text-white bg-default" pill>
-                              {singleProperty?.priceDetails?.maxGuests}{" "}
-                            </Badge>
-                          </div>
-                          <div className="d-flex flex-wrap mt-2">
-                            <h5 className="mb-0 mr-2">Extra guest fee</h5>
-                            <Badge className=" px-4 text-white bg-default" pill>
-                              ${singleProperty?.priceDetails?.extraGuestFee}{" "}
-                            </Badge>
-                          </div>
-                        </div>
-                      )} */}
-
                       <div className="d-flex flex-column ">
-                        {/* <div className=" d-flex align-items-center mt-3">
-                          <h5 className="mb-0 mr-2">Pets Allowed ?</h5>
-                          <Badge className="px-4 text-white bg-default" pill>
-                            {singleProperty?.petsAllowed === "true"
-                              ? "Yes"
-                              : "No"}
-                          </Badge>
-                        </div> */}
-                        {/* {singleProperty?.petsAllowed == "true" && (
-                          <div className=" d-flex align-items-center mt-3">
-                            <h5 className="mb-0 mr-2">Pets Fee</h5>
-                            <Badge
-                              className="  px-4 text-white bg-default"
-                              pill
-                            >
-                              ${singleProperty?.petFee}
-                            </Badge>
-                          </div>
-                        )} */}
                         <div className=" d-flex align-items-center mt-3">
                           <h5 className="mb-0 mr-2">Price</h5>
                           <Badge className=" px-4 text-white bg-default" pill>
@@ -235,6 +113,28 @@ const PropertyDetails = () => {
                             {singleProperty?.status}
                           </Badge>
                         </div>
+                      </div>
+                      <div className=" d-flex align-items-center mt-3">
+                        <h5 className="mb-0 mr-2">Color</h5>
+                        <Badge className=" px-4 text-white bg-default" pill>
+                          {singleProperty?.color}
+                          color
+                        </Badge>
+                      </div>
+                      
+                      <div className=" d-flex align-items-center mt-3">
+                        <h5 className="mb-0 mr-2">Size</h5>
+                        <Badge className=" px-4 text-white bg-default" pill>
+                          {singleProperty?.size}
+                          size
+                        </Badge>
+                      </div>
+                      <div className=" d-flex align-items-center mt-3">
+                        <h5 className="mb-0 mr-2">Top Selling</h5>
+                        <Badge className=" px-4 text-white bg-default" pill>
+                          {singleProperty?.topSelling}
+                          topSelling
+                        </Badge>
                       </div>
                     </Col>
                   </Row>

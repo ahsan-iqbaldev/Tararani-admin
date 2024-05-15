@@ -1,5 +1,3 @@
-import OnlyHeader from "components/Headers/OnlyHeader";
-import { countries } from "../../context/index";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -19,7 +17,7 @@ import {
 import { addProperty } from "store/properties/propertiesThunk";
 import { getCategory } from "store/categories/categoriesThunk";
 import JoditEditor from "jodit-react";
-import "../../assets/css/custuminput.css";
+import OnlyHeader from "components/Headers/OnlyHeader";
 
 const CreateListing = () => {
   const editor = useRef(null);
@@ -33,31 +31,49 @@ const CreateListing = () => {
 
   const [formData, setFormData] = useState({
     category: null,
-    categoryId: '',
+    categoryId: "",
     title: "",
     description: "",
     productImages: [],
     price: "",
     comparePrice: "",
+    color: false, 
+    size: false, 
   });
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    
-    if (name === 'category') {
-      const selectedCategory = categories.find(category => category.title === value);
-      
+
+    if (name === "category") {
+      const selectedCategory = categories.find(
+        (category) => category.title === value
+      );
+
       setFormData({
         ...formData,
         category: value,
-        categoryId: selectedCategory ? selectedCategory.id : '' 
+        categoryId: selectedCategory ? selectedCategory.id : "",
       });
     } else {
       setFormData({
         ...formData,
-        [name]: value
+        [name]: value,
       });
     }
+  };
+
+  const handleColorToggle = () => {
+    setFormData({
+      ...formData,
+      color: !formData?.color, 
+    });
+  };
+
+  const handleSizeToggle = () => {
+    setFormData({
+      ...formData,
+      size: !formData?.size, 
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -88,7 +104,7 @@ const CreateListing = () => {
           <div className="col">
             <Card className="shadow mb-4">
               <CardHeader className="pb-0 border-0 justify-content-between d-flex flex-wrap align-items-center">
-                <h3 className="mb-0  ">Create Listing</h3>
+                <h3 className="mb-0">Create Listing</h3>
               </CardHeader>
               <form onSubmit={handleSubmit}>
                 <CardBody>
@@ -137,7 +153,7 @@ const CreateListing = () => {
                           <JoditEditor
                             ref={editor}
                             value={formData.description}
-                            style={{width:"100%"}}
+                            style={{ width: "100%" }}
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
@@ -149,24 +165,52 @@ const CreateListing = () => {
                       </FormGroup>
                     </Col>
 
-                    <Col xs="12">
-                      <h4>Upload Product Images </h4>
+                    <Col md="6" className="mt-2">
+                      <FormGroup>
+                        <Label>Images</Label>
+                        <InputGroup className="input-group-alternative p-2">
+                          <Input
+                            required
+                            type="file"
+                            multiple
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                productImages: [...e.target.files],
+                              })
+                            }
+                          />
+                        </InputGroup>
+                      </FormGroup>
                     </Col>
                     <Col md="6" className="mt-2">
-                      <InputGroup className="input-group-alternative">
-                        <Input
-                          required
-                          type="file"
-                          multiple
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              productImages: [...e.target.files],
-                            })
-                          }
-                        />
-                      </InputGroup>
+                      <FormGroup>
+                        <Label> &nbsp;</Label>
+                        <div className="d-flex justify-content-around">
+                          <div className="justify-content-center d-flex flex-wrap align-items-center">
+                            <h3 className="mt-1">Color:</h3>
+                            <Button
+                              color={formData?.color ? "primary" : "secondary"}
+                              onClick={handleColorToggle}
+                              className="mr-2 ml-2"
+                            >
+                              {formData?.color ? "On" : "Off"}
+                            </Button>
+                          </div>
+                          <div className="justify-content-center d-flex flex-wrap align-items-center">
+                            <h3 className="mt-1">Size:</h3>
+                            <Button
+                              color={formData?.size ? "primary" : "secondary"}
+                              onClick={handleSizeToggle}
+                              className="ml-2"
+                            >
+                              {formData?.size ? "On" : "Off"}
+                            </Button>
+                          </div>
+                        </div>
+                      </FormGroup>
                     </Col>
+
                     <Col xs="12">
                       <hr />
                     </Col>

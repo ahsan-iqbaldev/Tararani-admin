@@ -1,7 +1,4 @@
 import OnlyHeader from "components/Headers/OnlyHeader";
-import InsuranceForHosts from "components/global/InsuranceForHosts";
-import PropertyDetailsGuidelines from "components/global/PropertyDetailsGuidelines";
-import PropertyPhotosGuidelines from "components/global/PropertyPhotosGuidelines";
 import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
@@ -49,17 +46,45 @@ const EditListing = () => {
     productImages: [],
     price: "",
     comparePrice: "",
+    color: false,
+    size: false,
   });
 
   console.log(formData, "HamzaIjazhiugjhyggf");
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
+  const handleInputChange = (event) => {
+    const { name, value } = event.target;
 
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+    if (name === "category") {
+      const selectedCategory = categories.find(
+        (category) => category.title === value
+      );
+
+      setFormData({
+        ...formData,
+        category: value,
+        categoryId: selectedCategory ? selectedCategory.id : "",
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [name]: value,
+      });
+    }
+  };
+
+  const handleColorToggle = () => {
+    setFormData({
+      ...formData,
+      color: !formData?.color,
+    });
+  };
+
+  const handleSizeToggle = () => {
+    setFormData({
+      ...formData,
+      size: !formData.size,
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -78,7 +103,7 @@ const EditListing = () => {
   };
 
   useEffect(() => {
-    setFormData(singleProperty)
+    setFormData(singleProperty);
   }, [singleProperty]);
 
   useEffect(() => {
@@ -104,7 +129,6 @@ const EditListing = () => {
               <form onSubmit={handleSubmit}>
                 <CardBody>
                   <Row>
-
                     <Col md="6">
                       <FormGroup>
                         <Label>State</Label>
@@ -138,8 +162,7 @@ const EditListing = () => {
                             }}
                             value={formData?.title}
                             name="title"
-                          >
-                          </Input>
+                          ></Input>
                         </InputGroup>
                       </FormGroup>
                     </Col>
@@ -148,11 +171,10 @@ const EditListing = () => {
                       <FormGroup>
                         <Label>Description</Label>
                         <InputGroup className="input-group-alternative">
-                   
-                               <JoditEditor
+                          <JoditEditor
                             ref={editor}
                             value={formData?.description}
-                            style={{width:"100%"}}
+                            style={{ width: "100%" }}
                             onChange={(e) =>
                               setFormData({
                                 ...formData,
@@ -164,25 +186,24 @@ const EditListing = () => {
                       </FormGroup>
                     </Col>
 
-                    <Col xs="12">
-                      <h4>
-                        Update Product Images{" "}
-                      
-                      </h4>
-                    </Col>
+                 
                     <Col md="6" className="mt-2">
-                      <InputGroup className="input-group-alternative">
-                        <Input
-                          type="file"
-                          multiple
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              productImages: [...e.target.files],
-                            })
-                          }
-                        />
-                      </InputGroup>
+                      <FormGroup>
+                        {" "}
+                        <Label>Images</Label>
+                        <InputGroup className="input-group-alternative p-2">
+                          <Input
+                            type="file"
+                            multiple
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                productImages: [...e.target.files],
+                              })
+                            }
+                          />
+                        </InputGroup>
+                      </FormGroup>
                       <div className="mt-3">
                         {formData?.productImages?.map((img, index) => (
                           <img
@@ -196,6 +217,35 @@ const EditListing = () => {
                         ))}
                       </div>
                     </Col>
+
+                    <Col md="6" className="mt-2">
+                      <FormGroup>
+                        <Label> &nbsp;</Label>
+                        <div className="d-flex justify-content-around">
+                          <div className="justify-content-center d-flex flex-wrap align-items-center">
+                            <h3 className="mt-1">Color:</h3>
+                            <Button
+                              color={formData?.color ? "primary" : "secondary"}
+                              onClick={handleColorToggle}
+                              className="mr-2 ml-2"
+                            >
+                              {formData?.color ? "On" : "Off"}
+                            </Button>
+                          </div>
+                          <div className="justify-content-center d-flex flex-wrap align-items-center">
+                            <h3 className="mt-1">Size:</h3>
+                            <Button
+                              color={formData?.size ? "primary" : "secondary"}
+                              onClick={handleSizeToggle}
+                              className="ml-2"
+                            >
+                              {formData?.size ? "On" : "Off"}
+                            </Button>
+                          </div>
+                        </div>
+                      </FormGroup>
+                    </Col>
+
                     <Col xs="12">
                       <hr />
                     </Col>

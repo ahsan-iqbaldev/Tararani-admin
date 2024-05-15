@@ -1,9 +1,12 @@
 import OnlyHeader from "components/Headers/OnlyHeader";
 import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
+import { HiTrendingUp } from "react-icons/hi";
+import { MdOutlineTrendingFlat } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import { toast } from "react-toastify";
 import {
   Button,
   Card,
@@ -14,6 +17,7 @@ import {
   Table,
 } from "reactstrap";
 import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { updateTopSellingAction } from "store/properties/propertiesThunk";
 import { deleteProperty } from "store/properties/propertiesThunk";
 import { getProperties } from "store/properties/propertiesThunk";
 
@@ -28,11 +32,23 @@ const PropertyListings = () => {
 
   console.log(property, "properties");
 
-
   const handleDelete = async (Id) => {
     console.log(Id, "ahsanId");
     dispatch(deleteProperty(Id));
     setModal(!modal);
+  };
+
+  const updateTopSelling = (id, data) => {
+    console.log(id, data, "Ahsan");
+    dispatch(
+      updateTopSellingAction({
+        id,
+        data,
+        onSuccess: () => {
+          toast.success("Update Top Selling products");
+        },
+      })
+    );
   };
 
   const toggle = () => setModal(!modal);
@@ -44,9 +60,7 @@ const PropertyListings = () => {
   return (
     <>
       <OnlyHeader />
-      {/* Page content */}
       <Container className="mt--7" fluid>
-        {/* Table */}
         <Row>
           <div className="col">
             <Card className="shadow">
@@ -84,9 +98,7 @@ const PropertyListings = () => {
                   <tbody>
                     {property?.map((property, index) => (
                       <tr key={index}>
-                        <td className="">
-                          {property?.title}
-                        </td>
+                        <td className="">{property?.title}</td>
                         <td>
                           {" "}
                           <Button
@@ -130,6 +142,22 @@ const PropertyListings = () => {
                             }}
                           >
                             <MdDelete />
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="bg-default border-0 text-white"
+                            onClick={() =>
+                              updateTopSelling(
+                                property?.id,
+                                !property?.topSelling
+                              )
+                            }
+                          >
+                            {property?.topSelling ? (
+                              <HiTrendingUp />
+                            ) : (
+                              <MdOutlineTrendingFlat />
+                            )}
                           </Button>
                         </td>
                       </tr>

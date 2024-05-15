@@ -138,19 +138,12 @@ const Login = () => {
               </div>
               <Form role="form" onSubmit={handleSubmit}>
                 <FormGroup className="mb-3">
-                  {/* <InputGroup className="input-group-alternative">
-                    <PhoneInput
-                      country={"pk"}
-                      required
-                      inputProps={phoneInputProps}
-                    />
-                  </InputGroup> */}
                   <PhoneInput
                     placeholder="Enter phone number"
                     value={phoneNumber}
                     onChange={handleInputChange}
                     defaultCountry="pk"
-                    className="form-control shadow rounded w-100 py-4 ps-12 text-gray-700 leading-tight spacinginput outline-none"
+                    className="form-control shadow rounded w-100 py-4 ps-12 text-gray-700 leading-tight outline-none"
                   />
                 </FormGroup>
 
