@@ -7,12 +7,14 @@ import thunk from "redux-thunk";
 import propertiesSlice from "./properties/propertiesSlice";
 import settingSlice from "./settings/settingSlice";
 import categoriesSlice from "./categories/categoriesSlice";
+import ordersSlice from "./orders/ordersSlice";
 
 const reducers = combineReducers({
   auth: authSlice,
   properties: propertiesSlice,
   settings: settingSlice,
   categories: categoriesSlice,
+  allOrders: ordersSlice,
 });
 
 const persistConfig = {

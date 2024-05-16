@@ -29,6 +29,8 @@ import Settings from "views/Settings";
 import BookingDetails from "views/BookingDetails";
 import PropertyDetails from "views/propertly-listings/PropertyDetails";
 import CreateBooking from "views/Bookings/CreateBooking";
+import Orders from "views/orders/Orders";
+import OrderDetails from "views/orders/OrderDetails";
 var routes = [
   {
     path: "/index",
@@ -76,6 +78,14 @@ var routes = [
     component: coHost,
     layout: "/admin",
   },
+  {
+    path: "/orders",
+    name: "Orders",
+    icon: "ni ni-single-02 text-site-primary",
+    component: Orders,
+    layout: "/admin",
+  },
+
   {
     path: "/update-listing/:id",
     name: "Create Listing",
@@ -128,6 +138,14 @@ var routes = [
     name: "Property Details",
     icon: "ni ni-settings text-site-primary",
     component: PropertyDetails,
+    layout: "/admin",
+    isMenu: false,
+  },
+  {
+    path: "/orders-details/:id",
+    name: "Order Details",
+    icon: "ni ni-settings text-site-primary",
+    component: OrderDetails,
     layout: "/admin",
     isMenu: false,
   },

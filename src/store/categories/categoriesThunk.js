@@ -48,44 +48,41 @@ export const addCategory = createAsyncThunk(
 );
 
 export const getCategory = createAsyncThunk(
-    "user/getCategory",
-    async (userUID, thunkAPI) => {
-      try {
-        thunkAPI.dispatch(fetchCategoriesLoader(true));
-  
-        const propertiesCollection = collection(db, "categories");
-        const propertiesQuery = query(
-          propertiesCollection,
-          where("createdBy", "==", userUID)
-        );
-  
-        onSnapshot(propertiesQuery, (querySnapshot) => {
-          const allProperties = [];
-          querySnapshot.forEach((doc) => {
-            allProperties.push({ id: doc.id, ...doc.data() });
-          });
-          thunkAPI.dispatch(fetchCategories(allProperties));
-        });
-      } catch (error) {
-        console.error(error);
-        thunkAPI.dispatch(fetchCategoriesLoader(false));
-  
-        throw error;
-      }
-    }
-  );
+  "user/getCategory",
+  async (userUID, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(fetchCategoriesLoader(true));
 
-  export const deleteCategory = createAsyncThunk(
-    "user/deleteCategory",
-    async (id, { rejectWithValue, dispatch }) => {
-      try {
-        const propertyRef = doc(db, "categories", id);
-        await deleteDoc(propertyRef);
-        toast.success("Delete property sucessfully");
-        return id;
-      } catch (error) {
-        console.error("Error deleting property:", error);
-        return rejectWithValue(error.message);
-      }
+      const propertiesCollection = collection(db, "categories");
+      const propertiesQuery = query(propertiesCollection);
+
+      onSnapshot(propertiesQuery, (querySnapshot) => {
+        const allProperties = [];
+        querySnapshot.forEach((doc) => {
+          allProperties.push({ id: doc.id, ...doc.data() });
+        });
+        thunkAPI.dispatch(fetchCategories(allProperties));
+      });
+    } catch (error) {
+      console.error(error);
+      thunkAPI.dispatch(fetchCategoriesLoader(false));
+
+      throw error;
     }
-  );
+  }
+);
+
+export const deleteCategory = createAsyncThunk(
+  "user/deleteCategory",
+  async (id, { rejectWithValue, dispatch }) => {
+    try {
+      const propertyRef = doc(db, "categories", id);
+      await deleteDoc(propertyRef);
+      toast.success("Delete property sucessfully");
+      return id;
+    } catch (error) {
+      console.error("Error deleting property:", error);
+      return rejectWithValue(error.message);
+    }
+  }
+);
