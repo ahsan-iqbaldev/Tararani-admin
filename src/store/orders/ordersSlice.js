@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { getsingleOrder } from "./ordersThunk";
+import { getsingleOrder, rejectOrder } from "./ordersThunk";
 
 const initialState = {
   orders: [],
@@ -38,6 +38,21 @@ const ordersSlice = createSlice({
         console.log("Error");
         state.loading = false;
         state.error = action.error.message;
+      })
+      /////rejectOrder
+      .addCase(rejectOrder.pending, (state) => {
+        console.log("Running");
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(rejectOrder.fulfilled, (state, action) => {
+        console.log("Completed");
+        state.loading = false;
+      })
+      .addCase(rejectOrder.rejected, (state, action) => {
+        console.log("Error");
+        state.loading = false;
+        // state.error = action.error.message;
       });
   },
 });

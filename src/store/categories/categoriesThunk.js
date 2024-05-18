@@ -4,22 +4,17 @@ import {
   doc,
   setDoc,
   collection,
-  getDocs,
   serverTimestamp,
   deleteDoc,
-  getDoc,
   query,
   onSnapshot,
-  where,
-  updateDoc,
 } from "firebase/firestore";
 import { db, storage } from "../../config/firebase";
-import { toast } from "react-toastify";
 import { fetchCategories, fetchCategoriesLoader } from "./categoriesSlice";
 
 export const addCategory = createAsyncThunk(
   "user/addCategory",
-  async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
+  async ({ formData, onSuccess, uid }, { rejectWithValue }) => {
     try {
       const { Categoryimage } = formData;
 
@@ -49,7 +44,7 @@ export const addCategory = createAsyncThunk(
 
 export const getCategory = createAsyncThunk(
   "user/getCategory",
-  async (userUID, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
       thunkAPI.dispatch(fetchCategoriesLoader(true));
 
@@ -74,11 +69,10 @@ export const getCategory = createAsyncThunk(
 
 export const deleteCategory = createAsyncThunk(
   "user/deleteCategory",
-  async (id, { rejectWithValue, dispatch }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const propertyRef = doc(db, "categories", id);
       await deleteDoc(propertyRef);
-      toast.success("Delete property sucessfully");
       return id;
     } catch (error) {
       console.error("Error deleting property:", error);

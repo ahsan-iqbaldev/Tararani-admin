@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
-import { addCategory,getsingleCategory } from "./categoriesThunk";
+import { addCategory, deleteCategory } from "./categoriesThunk";
 
 const initialState = {
   categories: [],
@@ -39,9 +39,24 @@ const categoriesSlice = createSlice({
         state.error = action.error.message;
       })
 
-  
+      //deleteCategory
+      .addCase(deleteCategory.pending, (state) => {
+        console.log("Running");
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteCategory.fulfilled, (state, action) => {
+        console.log("Completed");
+        state.loading = false;
+        toast.success("Category Delete successfully");
+      })
+      .addCase(deleteCategory.rejected, (state, action) => {
+        console.log("Error");
+        state.loading = false;
+        state.error = action.error.message;
+      });
   },
 });
 export const { fetchCategories, fetchCategoriesLoader } =
-categoriesSlice.actions;
+  categoriesSlice.actions;
 export default categoriesSlice.reducer;

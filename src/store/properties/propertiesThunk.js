@@ -19,109 +19,6 @@ import { db, storage } from "../../config/firebase";
 import { toast } from "react-toastify";
 import { fetchProperties, fetchPropertiesLoader } from "./propertiesSlice";
 
-// export const addProperty = createAsyncThunk(
-//   "user/addproperty",
-//   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
-//     try {
-//       const { productImages } = formData;
-
-//       const imagesArr = await Promise.all(
-//         productImages?.map(async (amenity) => {
-//           const storageRef = ref(storage, `productImages/${amenity.name}`);
-//           await uploadBytes(storageRef, amenity);
-//           return await getDownloadURL(storageRef);
-//         })
-//       );
-
-//       const propertiesCollectionRef = collection(db, "products");
-//       const documentRef = doc(propertiesCollectionRef);
-
-//       await setDoc(documentRef, {
-//         category: formData?.category,
-//         productImages: imagesArr,
-//         title: formData?.title,
-//         description: formData?.description,
-//         price: formData?.price,
-//         comparePrice: formData?.comparePrice,
-//         createdAt: serverTimestamp(),
-//         createdBy: uid,
-//         status: "ACTIVE",
-//         sales: 0,
-//       });
-
-//       onSuccess();
-//     } catch (error) {
-//       console.error(error);
-//       return rejectWithValue(error.message || "Error processing form data");
-//     }
-//   }
-// );
-
-// export const addProperty = createAsyncThunk(
-//   "user/addproperty",
-//   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
-//     try {
-//       const { productImages } = formData;
-
-//       const imagesArr = await Promise.all(
-//         productImages?.map(async (amenity) => {
-//           const storageRef = ref(storage, `productImages/${amenity.name}`);
-//           await uploadBytes(storageRef, amenity);
-//           return getDownloadURL(storageRef);
-//         })
-//       );
-
-//       const propertiesCollectionRef = collection(db, "products");
-//       const documentRef = doc(propertiesCollectionRef);
-
-//       await setDoc(documentRef, {
-//         category: formData?.category,
-//         productImages: imagesArr,
-//         title: formData?.title,
-//         description: formData?.description,
-//         price: formData?.price,
-//         comparePrice: formData?.comparePrice,
-//         createdAt: serverTimestamp(),
-//         createdBy: uid,
-//         status: "ACTIVE",
-//         sales: 0,
-//       });
-
-//       // Fetch data from categories collection
-//       const categoriesCollectionRef = collection(db, "products");
-//       const q = query(
-//         categoriesCollectionRef,
-//         where("category", "==", formData?.category)
-//       );
-//       const querySnapshot = await getDocs(q);
-
-//       const categoryDocs = [];
-//       querySnapshot.forEach((doc) => {
-//         categoryDocs.push(doc.data());
-//       });
-
-//       console.log(categoryDocs, "categoryDocs");
-
-//       if (categoryDocs.length > 0) {
-//         const propertiesCollectionRef = collection(db, "categories");
-//         const documentRef = doc(
-//           propertiesCollectionRef,
-//           where("title", "==", formData?.category)
-//         );
-
-//         await updateDoc(documentRef, {
-//           products: categoryDocs?.length,
-//         });
-//       }
-
-//       onSuccess();
-//     } catch (error) {
-//       console.error(error);
-//       return rejectWithValue(error.message || "Error processing form data");
-//     }
-//   }
-// );
-
 export const addProperty = createAsyncThunk(
   "user/addproperty",
   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
@@ -183,14 +80,14 @@ export const addProperty = createAsyncThunk(
 
 export const getProperties = createAsyncThunk(
   "user/getproperties",
-  async (userUID, thunkAPI) => {
+  async (_, thunkAPI) => {
     try {
       thunkAPI.dispatch(fetchPropertiesLoader(true));
 
       const propertiesCollection = collection(db, "products");
       const propertiesQuery = query(
         propertiesCollection,
-        orderBy("createdAt",'desc')
+        orderBy("createdAt", "desc")
       );
 
       onSnapshot(propertiesQuery, (querySnapshot) => {
@@ -211,11 +108,10 @@ export const getProperties = createAsyncThunk(
 
 export const deleteProperty = createAsyncThunk(
   "user/deleteProperty",
-  async (id, { rejectWithValue, dispatch }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const propertyRef = doc(db, "products", id);
       await deleteDoc(propertyRef);
-      toast.success("Delete property sucessfully");
       return id;
     } catch (error) {
       console.error("Error deleting property:", error);
@@ -226,7 +122,7 @@ export const deleteProperty = createAsyncThunk(
 
 export const getsingleProperty = createAsyncThunk(
   "user/getsingleproperty",
-  async (id, { rejectWithValue, dispatch }) => {
+  async (id, { rejectWithValue }) => {
     try {
       const propertyRef = doc(db, "products", id);
 
@@ -248,17 +144,19 @@ export const getsingleProperty = createAsyncThunk(
 
 export const updateTopSellingAction = createAsyncThunk(
   "user/updatestatus",
-  async ({ id, data, onSuccess }, { rejectWithValue, getState, dispatch }) => {
+  async ({ id, data, onSuccess }, { rejectWithValue, getState }) => {
     try {
       const state = getState();
-      console.log(state,'state')
-      const products = state?.properties?.property; 
-      console.log(products,'products')
+      console.log(state, "state");
+      const products = state?.properties?.property;
+      console.log(products, "products");
 
-      const topSellingCount = products.filter(product => product.topSelling).length;
+      const topSellingCount = products.filter(
+        (product) => product.topSelling
+      ).length;
 
       if (data && topSellingCount >= 4) {
-        toast.error("You can only mark up to 4 items as top selling.")
+        toast.error("You can only mark up to 4 items as top selling.");
         return rejectWithValue("Exceeded top selling limit");
       }
 
@@ -277,13 +175,9 @@ export const updateTopSellingAction = createAsyncThunk(
   }
 );
 
-
 export const updateProperty = createAsyncThunk(
   "user/updateproperty",
-  async (
-    { formData, onSuccess, uid, docId },
-    { rejectWithValue, dispatch }
-  ) => {
+  async ({ formData, onSuccess, uid, docId }, { rejectWithValue }) => {
     console.log({ formData, onSuccess, uid, docId });
     try {
       const { productImages } = formData;

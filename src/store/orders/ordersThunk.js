@@ -2,52 +2,16 @@ import { createAsyncThunk } from "@reduxjs/toolkit";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import {
   doc,
-  setDoc,
   collection,
   getDocs,
-  serverTimestamp,
-  deleteDoc,
   getDoc,
   query,
-  onSnapshot,
-  where,
   updateDoc,
   orderBy,
 } from "firebase/firestore";
 
-import { db, storage } from "../../config/firebase";
-import { toast } from "react-toastify";
+import { db } from "../../config/firebase";
 import { fetchOrders, fetchOrdersLoader } from "./ordersSlice";
-
-// export const addCategory = createAsyncThunk(
-//   "user/addCategory",
-//   async ({ formData, onSuccess, uid }, { rejectWithValue, dispatch }) => {
-//     try {
-//       const { Categoryimage } = formData;
-
-//       const amenity = Categoryimage;
-//       const storageRef = ref(storage, `Categoryimage/${amenity.name}`);
-//       await uploadBytes(storageRef, amenity);
-//       const downloadURL = await getDownloadURL(storageRef);
-
-//       const propertiesCollectionRef = collection(db, "categories");
-//       const documentRef = doc(propertiesCollectionRef);
-
-//       await setDoc(documentRef, {
-//         title: formData?.title,
-//         Categoryimage: downloadURL,
-//         createdAt: serverTimestamp(),
-//         createdBy: uid,
-//         products: 0,
-//       });
-
-//       onSuccess();
-//     } catch (error) {
-//       console.error(error);
-//       return rejectWithValue(error.message || "Error processing form data");
-//     }
-//   }
-// );
 
 export const getOrders = createAsyncThunk(
   "user/getOrders",
@@ -138,32 +102,20 @@ export const updateOrderAction = createAsyncThunk(
   }
 );
 
-export const addOrders = createAsyncThunk(
-  "user/deleteCategory",
-  async (id, { rejectWithValue, dispatch }) => {
-    // try {
-    //   const propertyRef = doc(db, "categories", id);
-    //   await deleteDoc(propertyRef);
-    //   toast.success("Delete property sucessfully");
-    //   return id;
-    // } catch (error) {
-    //   console.error("Error deleting property:", error);
-    //   return rejectWithValue(error.message);
-    // }
+export const rejectOrder = createAsyncThunk(
+  "user/rejectOrder",
+  async ({ Id, onSuccess }, { rejectWithValue, dispatch }) => {
+    console.log(Id, "id");
+    try {
+      const propertiesCollectionRef = collection(db, "orders");
+      const documentRef = doc(propertiesCollectionRef, Id);
+      await updateDoc(documentRef, {
+        status: "rejected",
+      });
+      onSuccess();
+    } catch (error) {
+      console.error(error);
+      return rejectWithValue(error.message);
+    }
   }
 );
-
-// export const deleteCategory = createAsyncThunk(
-//   "user/deleteCategory",
-//   async (id, { rejectWithValue, dispatch }) => {
-//     try {
-//       const propertyRef = doc(db, "categories", id);
-//       await deleteDoc(propertyRef);
-//       toast.success("Delete property sucessfully");
-//       return id;
-//     } catch (error) {
-//       console.error("Error deleting property:", error);
-//       return rejectWithValue(error.message);
-//     }
-//   }
-// );

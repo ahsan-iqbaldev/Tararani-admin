@@ -1,29 +1,20 @@
 import OnlyHeader from "components/Headers/OnlyHeader";
 import React, { useEffect, useState } from "react";
-import { FaEdit } from "react-icons/fa";
 import { HiTrendingUp } from "react-icons/hi";
 import { MdOutlineTrendingFlat } from "react-icons/md";
 import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  Button,
-  Card,
-  CardHeader,
-  Container,
-  Row,
-  Spinner,
-  Table,
-} from "reactstrap";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Card, CardHeader, Container, Row, Table } from "reactstrap";
+import { Modal, ModalBody, ModalFooter } from "reactstrap";
 import { getOrders } from "store/orders/ordersThunk";
-import { updateTopSellingAction } from "store/properties/propertiesThunk";
 import { deleteProperty } from "store/properties/propertiesThunk";
-import { getProperties } from "store/properties/propertiesThunk";
 import dayjs from "dayjs";
 import { updateOrderAction } from "store/orders/ordersThunk";
 import { Link } from "react-router-dom/cjs/react-router-dom.min";
+import { rejectOrder } from "store/orders/ordersThunk";
+import Loader from "components/Loader";
 
 const Orders = () => {
   const dispatch = useDispatch();
@@ -33,13 +24,18 @@ const Orders = () => {
   const uid = user.uid;
   const [modal, setModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState("");
-
-  console.log(orders, "orders");
-
   const handleDelete = async (Id) => {
     console.log(Id, "ahsanId");
-    dispatch(deleteProperty(Id));
-    setModal(!modal);
+    dispatch(
+      rejectOrder({
+        Id,
+        onSuccess: () => {
+          toast.success("Order Rejected Successfully");
+          setModal(!modal);
+          dispatch(getOrders());
+        },
+      })
+    );
   };
 
   const updateStatus = (id, data) => {
@@ -73,11 +69,7 @@ const Orders = () => {
                 <h3 className="mb-0  ">Orders</h3>
               </CardHeader>
               {loading ? (
-                <div className="w-100 d-flex justify-content-center align-items-center vh-100">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden"></span>
-                  </div>
-                </div>
+                <Loader />
               ) : (
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
@@ -123,17 +115,18 @@ const Orders = () => {
                         </td>
 
                         <td className="text-center">
-                            <Link to={`/admin/orders-details/${property.id}`}>
-                          <Button
-                            size="sm"
-                            className="bg-default border-0 text-white mr-2"
-                          >
-                            View Details
-                          </Button>
+                          <Link to={`/admin/orders-details/${property.id}`}>
+                            <Button
+                              size="sm"
+                              className="bg-default border-0 text-white mr-2"
+                            >
+                              View Details
+                            </Button>
                           </Link>
                           <Button
                             size="sm"
                             className="bg-default border-0 text-white"
+                            disabled={property?.status != "pending"}
                             onClick={() =>
                               updateStatus(
                                 property?.id,
@@ -149,6 +142,18 @@ const Orders = () => {
                               <MdOutlineTrendingFlat />
                             )}
                           </Button>
+
+                          <Button
+                            size="sm"
+                            className="bg-default border-0 text-white"
+                            disabled={property?.status != "pending"}
+                            onClick={() => {
+                              setConfirmDelete(property?.id);
+                              toggle();
+                            }}
+                          >
+                            <MdDelete />
+                          </Button>
                         </td>
                       </tr>
                     ))}
@@ -160,7 +165,7 @@ const Orders = () => {
 
           <Modal isOpen={modal} toggle={toggle}>
             <ModalBody className="mt-2">
-              Are you sure you want to delete this item?
+              Are you sure you want to reject this Order?
             </ModalBody>
             <ModalFooter>
               <Button color="secondary" onClick={toggle}>
@@ -168,11 +173,12 @@ const Orders = () => {
               </Button>
               <Button
                 color="danger"
+                disabled={loading}
                 onClick={() => {
                   handleDelete(confirmDelete);
                 }}
               >
-                Confirm Delete
+                Confirm Reject
               </Button>{" "}
             </ModalFooter>
           </Modal>

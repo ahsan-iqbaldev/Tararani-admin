@@ -28,6 +28,7 @@ import { useHistory } from "react-router-dom";
 import { getCategory } from "store/categories/categoriesThunk";
 import { deleteCategory } from "store/categories/categoriesThunk";
 import { getsingleCategory } from "store/categories/categoriesThunk";
+import Loader from "components/Loader";
 
 const CoHost = () => {
   const dispatch = useDispatch();
@@ -40,7 +41,7 @@ const CoHost = () => {
   const [modal, setModal] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState("");
   const [formData, setFormData] = useState({
-    title:"",
+    title: "",
     Categoryimage: null,
   });
 
@@ -68,11 +69,11 @@ const CoHost = () => {
         formData,
         onSuccess: () => {
           history.push("/admin/category");
-          setCreateModal(!createModal)
+          setCreateModal(!createModal);
           setFormData({
             title: "",
             Categoryimage: null,
-          })
+          });
         },
         uid,
       })
@@ -90,66 +91,70 @@ const CoHost = () => {
       {/* Page content */}
       <Container className="mt--7" fluid>
         {/* Table */}
-        <Row>
-          <div className="col">
-            <Card className="shadow">
-              <CardHeader className="border-0 justify-content-between d-flex flex-wrap align-items-center">
-                <h3 className="mb-0 ">Categories</h3>
-                <Button
-                  className="mt-2  bg-default border-0 text-white"
-                  onClick={createToggle}
-                >
-                  Create category
-                </Button>
-              </CardHeader>
-              <Table className="align-items-center table-flush" responsive>
-                <thead className="thead-light">
-                  <tr>
-                    <th scope="col">Category</th>
-                    <th scope="col">Products</th>
-                    <th scope="col">Category Images</th>
-                    <th scope="col" className="text-center">
-                      actions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {categories?.map((item, index) => (
+        {loading ? (
+          <Loader />
+        ) : (
+          <Row>
+            <div className="col">
+              <Card className="shadow">
+                <CardHeader className="border-0 justify-content-between d-flex flex-wrap align-items-center">
+                  <h3 className="mb-0 ">Categories</h3>
+                  <Button
+                    className="mt-2  bg-default border-0 text-white"
+                    onClick={createToggle}
+                  >
+                    Create category
+                  </Button>
+                </CardHeader>
+                <Table className="align-items-center table-flush" responsive>
+                  <thead className="thead-light">
                     <tr>
-                      <td scope="col">{item?.title}</td>
-                      <td scope="col">{item?.products}</td>
-                      <td scope="col">
-                        {" "}
-                        <img
-                          src={item?.Categoryimage}
-                          alt="Categoryimage"
-                          height="60px"
-                          width="60px"
-                          className="rounded"
-                        />
-                      </td>
-                      <td scope="col" className="text-center display-1">
-                        <h3>
-                          <Button
-                            color=" bg-default border-0 text-white"
-                            size="sm"
-                            type="button"
-                            onClick={() => {
-                              setConfirmDelete(item?.id);
-                              toggle();
-                            }}
-                          >
-                            <MdDelete />
-                          </Button>
-                        </h3>
-                      </td>
+                      <th scope="col">Category</th>
+                      <th scope="col">Products</th>
+                      <th scope="col">Category Images</th>
+                      <th scope="col" className="text-center">
+                        actions
+                      </th>
                     </tr>
-                  ))}
-                </tbody>
-              </Table>
-            </Card>
-          </div>
-        </Row>
+                  </thead>
+                  <tbody>
+                    {categories?.map((item, index) => (
+                      <tr>
+                        <td scope="col">{item?.title}</td>
+                        <td scope="col">{item?.products}</td>
+                        <td scope="col">
+                          {" "}
+                          <img
+                            src={item?.Categoryimage}
+                            alt="Categoryimage"
+                            height="60px"
+                            width="60px"
+                            className="rounded"
+                          />
+                        </td>
+                        <td scope="col" className="text-center display-1">
+                          <h3>
+                            <Button
+                              color=" bg-default border-0 text-white"
+                              size="sm"
+                              type="button"
+                              onClick={() => {
+                                setConfirmDelete(item?.id);
+                                toggle();
+                              }}
+                            >
+                              <MdDelete />
+                            </Button>
+                          </h3>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
+              </Card>
+            </div>
+          </Row>
+        )}
       </Container>
       <Modal isOpen={createModal} toggle={createToggle}>
         <Form role="form" onSubmit={handleSubmit}>
@@ -185,8 +190,12 @@ const CoHost = () => {
             </FormGroup>
           </ModalBody>
           <ModalFooter>
-            <Button color=" bg-default border-0 text-white" type="submit">
-              {loading ? "Loading..." : "Create"}
+            <Button
+              color=" bg-default border-0 text-white"
+              type="submit"
+              disabled={loading}
+            >
+              Create
             </Button>{" "}
             <Button color="secondary" onClick={createToggle}>
               Cancel
@@ -196,23 +205,24 @@ const CoHost = () => {
       </Modal>
 
       <Modal isOpen={modal} toggle={toggle}>
-            <ModalBody className="mt-2">
-              Are you sure you want to delete this item?
-            </ModalBody>
-            <ModalFooter>
-              <Button color="secondary" onClick={toggle}>
-                Cancel
-              </Button>
-              <Button
-                color="danger"
-                onClick={() => {
-                  handleDelete(confirmDelete);
-                }}
-              >
-                Confirm Delete
-              </Button>{" "}
-            </ModalFooter>
-          </Modal>
+        <ModalBody className="mt-2">
+          Are you sure you want to delete this item?
+        </ModalBody>
+        <ModalFooter>
+          <Button color="secondary" onClick={toggle}>
+            Cancel
+          </Button>
+          <Button
+            color="danger"
+            disabled={loading}
+            onClick={() => {
+              handleDelete(confirmDelete);
+            }}
+          >
+            Confirm Delete
+          </Button>{" "}
+        </ModalFooter>
+      </Modal>
     </>
   );
 };

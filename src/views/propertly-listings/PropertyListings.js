@@ -1,4 +1,5 @@
 import OnlyHeader from "components/Headers/OnlyHeader";
+import Loader from "components/Loader";
 import React, { useEffect, useState } from "react";
 import { FaEdit } from "react-icons/fa";
 import { HiTrendingUp } from "react-icons/hi";
@@ -7,16 +8,8 @@ import { MdDelete } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import { toast } from "react-toastify";
-import {
-  Button,
-  Card,
-  CardHeader,
-  Container,
-  Row,
-  Spinner,
-  Table,
-} from "reactstrap";
-import { Modal, ModalHeader, ModalBody, ModalFooter } from "reactstrap";
+import { Button, Card, CardHeader, Container, Row, Table } from "reactstrap";
+import { Modal, ModalBody, ModalFooter } from "reactstrap";
 import { updateTopSellingAction } from "store/properties/propertiesThunk";
 import { deleteProperty } from "store/properties/propertiesThunk";
 import { getProperties } from "store/properties/propertiesThunk";
@@ -76,11 +69,7 @@ const PropertyListings = () => {
                 </Button>
               </CardHeader>
               {loading ? (
-                <div className="w-100 d-flex justify-content-center align-items-center vh-100">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden"></span>
-                  </div>
-                </div>
+                <Loader />
               ) : (
                 <Table className="align-items-center table-flush" responsive>
                   <thead className="thead-light">
@@ -178,6 +167,7 @@ const PropertyListings = () => {
               </Button>
               <Button
                 color="danger"
+                disabled={loading}
                 onClick={() => {
                   handleDelete(confirmDelete);
                 }}

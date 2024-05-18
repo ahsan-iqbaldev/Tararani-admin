@@ -1,4 +1,5 @@
 import OnlyHeader from "components/Headers/OnlyHeader";
+import Loader from "components/Loader";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom/cjs/react-router-dom.min";
@@ -39,11 +40,7 @@ const PropertyDetails = () => {
                 <h3 className="mb-0">Product Details</h3>
               </CardHeader>
               {loading ? (
-                <div className="w-100 d-flex justify-content-center align-items-center vh-100">
-                  <div className="spinner-border text-primary" role="status">
-                    <span className="visually-hidden"></span>
-                  </div>
-                </div>
+               <Loader/>
               ) : (
                 <CardBody className="">
                   <Row>

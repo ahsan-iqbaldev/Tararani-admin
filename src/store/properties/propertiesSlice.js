@@ -2,9 +2,9 @@ import { createSlice } from "@reduxjs/toolkit";
 import { toast } from "react-toastify";
 import {
   addProperty,
-  getProperties,
   getsingleProperty,
   updateProperty,
+  deleteProperty,
 } from "./propertiesThunk";
 
 const initialState = {
@@ -75,6 +75,23 @@ const propertiesSlice = createSlice({
         toast.success("Update Property successfully");
       })
       .addCase(updateProperty.rejected, (state, action) => {
+        console.log("Error");
+        state.loading = false;
+        state.error = action.error.message;
+      })
+
+      // // get deleteProperty cases
+      .addCase(deleteProperty.pending, (state) => {
+        console.log("Running");
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProperty.fulfilled, (state, action) => {
+        console.log("Completed");
+        state.loading = false;
+        toast.success("Delete Product successfully");
+      })
+      .addCase(deleteProperty.rejected, (state, action) => {
         console.log("Error");
         state.loading = false;
         state.error = action.error.message;
