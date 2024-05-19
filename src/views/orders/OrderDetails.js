@@ -118,6 +118,12 @@ const OrderDetails = () => {
                             {singleOrder?.status}
                           </Badge>
                         </div>
+                        <div className=" d-flex align-items-center mt-3">
+                          <h5 className="mb-0 mr-2">Order On</h5>
+                          <Badge className=" px-4 text-white bg-default" pill>
+                            {singleOrder?.orderOn}
+                          </Badge>
+                        </div>
                       </div>
                       <div className=" d-flex align-items-center mt-3">
                         <h5 className="mb-0 mr-2">Color</h5>
